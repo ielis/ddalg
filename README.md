@@ -41,13 +41,18 @@ The current implementation needs to rebuild the tree after each `insert`, hence 
   # ... 
   ```
 - query `itree`:
-  - either using *position*:
+  - using 1-based *position*:
     ```python
     itree.search(1)
     ```
     > returns `(0,3)`
-  - or using half-open *interval coordinates*:
+  - using half-open *interval coordinates*:
     ```python
-    itree.query(0, 1) 
+    itree.get_overlaps(0, 1) 
     ``` 
     > returns `(0,3)`, effectively the same query as above
+  - using fuzzy search with required coverage
+    ```python
+    itree.fuzzy_query(0, 1, coverage=.90)
+    ```
+    > require interval stored in a tree to have at least 90% overlap with query interval 

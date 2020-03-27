@@ -52,16 +52,7 @@ class TestInterval(unittest.TestCase):
 class TestIntervalTree(unittest.TestCase):
 
     def setUp(self) -> None:
-        intervals = []
-        i = 0
-        a, b = 0, 3
-        while i <= 8:
-            intervals.append(SimpleInterval(a, b))
-            a += 1
-            b += 1
-            i += 1
-        # intervals=[(0,3), (1,4), ..., (8, 11)]
-
+        intervals = make_intervals(0, 3, 9)
         self.tree = IntervalTree(intervals)
 
     def test_search(self):
@@ -81,24 +72,27 @@ class TestIntervalTree(unittest.TestCase):
 
         self.assertEqual(0, len(self.tree.search(12)))
 
-    def test_query(self):
-        self.assertEqual(0, len(self.tree.query(-1, 0)))
+        # test error input
+        self.assertRaises(ValueError, self.tree.search, 'BlaBla')
 
-        result = self.tree.query(0, 1)
+    def test_get_overlaps(self):
+        self.assertEqual(0, len(self.tree.get_overlaps(-1, 0)))
+
+        result = self.tree.get_overlaps(0, 1)
         self.assertEqual(1, len(result))
         self.assertListEqual([SimpleInterval(0, 3)], result)
 
-        result = self.tree.query(4, 6)
+        result = self.tree.get_overlaps(4, 6)
         self.assertEqual(4, len(result))
         self.assertListEqual(
             [SimpleInterval(2, 5), SimpleInterval(3, 6), SimpleInterval(4, 7), SimpleInterval(5, 8)],
             result)
 
-        result = self.tree.query(10, 11)
-        self.assertEqual(1, len(result))
+        result = self.tree.get_overlaps(10, 11)
+        self.assertEqual(1, len(list(result)))
         self.assertListEqual([SimpleInterval(8, 11)], result)
 
-        self.assertEqual(0, len(self.tree.query(11, 12)))
+        self.assertEqual(0, len(self.tree.get_overlaps(11, 12)))
 
     def test_len(self):
         self.assertEqual(9, len(self.tree))
@@ -111,6 +105,29 @@ class TestIntervalTree(unittest.TestCase):
         results = self.tree.search(12)
         self.assertEqual(1, len(results))
         self.assertListEqual([SimpleInterval(9, 12)], results)
+
+    def test_fuzzy_query(self):
+        intervals = make_intervals(-5, 95, 11)
+        tree = IntervalTree(intervals)
+
+        # by default required coverage is 1.
+        self.assertListEqual([SimpleInterval(0, 100)], tree.fuzzy_query(0, 100))
+
+        # try .98, this should add intervals within +-1 to the results
+        self.assertListEqual([SimpleInterval(-1, 99),
+                              SimpleInterval(0, 100),
+                              SimpleInterval(1, 101)],
+                             tree.fuzzy_query(0, 100, coverage=.98))
+        # try .95, this should add intervals within +-2.5 to the results
+        self.assertListEqual([SimpleInterval(-2, 98),
+                              SimpleInterval(-1, 99),
+                              SimpleInterval(0, 100),
+                              SimpleInterval(1, 101),
+                              SimpleInterval(2, 102)],
+                             tree.fuzzy_query(0, 100, coverage=.95))
+
+        # test error input
+        self.assertRaises(ValueError, tree.fuzzy_query, 0, 100, 1.5)
 
 
 class SimpleInterval(Interval):
@@ -126,3 +143,16 @@ class SimpleInterval(Interval):
     @property
     def end(self):
         return self._end
+
+
+def make_intervals(begin, end, n):
+    intervals = []
+    i = 0
+    a, b = begin, end
+    while i < n:
+        intervals.append(SimpleInterval(a, b))
+        a += 1
+        b += 1
+        i += 1
+    # intervals=[(0,3), (1,4), ..., (8, 11)]
+    return intervals
