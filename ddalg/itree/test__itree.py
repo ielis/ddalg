@@ -28,6 +28,22 @@ class TestInterval(unittest.TestCase):
                                         SimpleInterval(3, 4),
                                         SimpleInterval(4, 5)]))
 
+    def test_intersection(self):
+        intersection = self.one.intersection(SimpleInterval(0, 1))
+        self.assertEqual(0, intersection)
+
+        intersection = self.one.intersection(SimpleInterval(0, 2))
+        self.assertEqual(1, intersection)
+
+        intersection = self.one.intersection(SimpleInterval(0, 5))
+        self.assertEqual(2, intersection)
+
+        intersection = self.one.intersection(SimpleInterval(2, 3))
+        self.assertEqual(1, intersection)
+
+        intersection = self.one.intersection(SimpleInterval(3, 4))
+        self.assertEqual(0, intersection)
+
 
 class TestIntervalTree(unittest.TestCase):
 

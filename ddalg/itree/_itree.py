@@ -25,6 +25,11 @@ class Interval(metaclass=abc.ABCMeta):
     def intersects(self, begin, end):
         return end > self.begin and begin < self.end
 
+    def intersection(self, other):
+        if self.end <= other.begin or other.end <= self.begin:
+            return 0
+        return max(min(self.end, other.end) - max(self.begin, other.begin), 1)
+
     def __lt__(self, other):
         if self.begin != other.begin:
             return self.begin < other.begin
