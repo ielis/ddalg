@@ -11,6 +11,7 @@ This implementation uses half-open intervals, where begin coordinate is excluded
 The current implementation needs to rebuild the tree after each `insert`, hence the tree is not efficient for using in *read/write* fashion.
 
 ### Usage
+
 - implement your custom interval object while extending `Interval`. Two properties need to be overwritten:
   - `begin` - 0-based (excluded) begin coordinate of the interval
   - `end` - 0-based (included) end coordinate of the interval
