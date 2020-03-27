@@ -57,14 +57,14 @@ class SimpleInterval(Interval):
         return self._end
 
 
-def make_intervals(begin, end, n):
+def make_intervals(begin, end, n, step=1):
     # intervals=[(0,3), (1,4), ..., (8, 11)]
     intervals = []
     i = 0
     a, b = begin, end
     while i < n:
         intervals.append(SimpleInterval(a, b))
-        a += 1
-        b += 1
+        a += step
+        b += step
         i += 1
     return intervals

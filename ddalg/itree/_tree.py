@@ -68,10 +68,11 @@ class IntervalTree:
         dist_begin, dist_end = begin - margin, end + margin
         prox_begin, prox_end = begin + margin, end - margin
 
-        # first get all intervals that are contained within the distal region
-        # then filter to retain
-        return [interval for interval in self.get_overlaps(dist_begin, dist_end)
-                if interval.begin <= prox_begin and interval.end >= prox_end]
+        # first get all intervals that overlap with [begin,end]
+        # then filter to retain intervals with begin/end coordinates close to query
+        return [interval for interval in self.get_overlaps(begin, end)
+                if dist_begin <= interval.begin <= prox_begin
+                and dist_end >= interval.end >= prox_end]
 
     def __len__(self):
         self.build()  # make sure the tree is up-to-date

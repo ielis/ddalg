@@ -85,6 +85,11 @@ class TestIntervalTree(unittest.TestCase):
         # test error input
         self.assertRaises(ValueError, tree.fuzzy_query, 0, 100, 1.5)
 
+    def test_fuzzy_query_other(self):
+        tree = IntervalTree(make_intervals(38, 62, 1))
+        results = tree.fuzzy_query(40, 60, coverage=.80)
+        self.assertListEqual([SimpleInterval(38, 62)], results)
+
     def test_bool(self):
         self.assertTrue(self.tree)  # tree with at least one element is true
         self.assertFalse(IntervalTree([]))  # empty tree is False
