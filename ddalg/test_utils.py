@@ -1,7 +1,7 @@
 import unittest
 
 from ddalg.utils import jaccard_coefficient, get_boundary_margin
-from .itree.test__itree import SimpleInterval
+from .itree.test__tree import SimpleInterval
 
 
 class TestUtil(unittest.TestCase):
