@@ -1,6 +1,6 @@
 import unittest
 
-from ._interval import Interval
+from ._interval import SimpleInterval
 
 
 class TestInterval(unittest.TestCase):
@@ -40,21 +40,6 @@ class TestInterval(unittest.TestCase):
 
         intersection = self.one.intersection(SimpleInterval(3, 4))
         self.assertEqual(0, intersection)
-
-
-class SimpleInterval(Interval):
-
-    def __init__(self, begin: int, end: int):
-        self._begin = begin
-        self._end = end
-
-    @property
-    def begin(self):
-        return self._begin
-
-    @property
-    def end(self):
-        return self._end
 
 
 def make_intervals(begin, end, n, step=1):

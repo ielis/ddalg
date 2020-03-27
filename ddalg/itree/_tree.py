@@ -1,8 +1,10 @@
+import logging
 import numbers
 import typing
 from collections import deque
 
-from ddalg.utils import get_boundary_margin
+from ddalg.utils import get_boundary_margin, jaccard_coefficient
+from ._interval import SimpleInterval
 from ._node import IntervalNode, Interval
 
 
@@ -13,6 +15,7 @@ class IntervalTree:
         self._intervals = intervals
         self._in_sync = True
         self._size = len(intervals)
+        self._logger = logging.getLogger(__name__)
 
     def build(self):
         if not self._in_sync:
@@ -67,12 +70,32 @@ class IntervalTree:
         # distal begin/end coordinates are defined as are query+-margin
         dist_begin, dist_end = begin - margin, end + margin
         prox_begin, prox_end = begin + margin, end - margin
+        self._logger.debug("Returning intervals [{}+-{:.2f}, {}+-{:.2f}]".format(begin, margin, end, margin))
 
         # first get all intervals that overlap with [begin,end]
         # then filter to retain intervals with begin/end coordinates close to query
         return [interval for interval in self.get_overlaps(begin, end)
                 if dist_begin <= interval.begin <= prox_begin
                 and dist_end >= interval.end >= prox_end]
+
+    def jaccard_query(self, begin, end, min_jaccard=1.):
+        """
+        Get intervals that imperfectly overlap with given query coordinates, while covering at least `coverage` of
+        the query.
+        :param begin: 0-based (excluded) begin position of query
+        :param end: 0-based (included) end position of query
+        :param min_jaccard: float in [0,1] specifying what fraction of query the interval needs to overlap with
+        :return: list of overlapping intervals
+        """
+        if 0 < min_jaccard > 1:
+            raise ValueError("min_jaccard must be within [0,1]")
+
+        self.build()  # make sure the tree is up-to-date
+
+        # first get all intervals that overlap with [begin,end]
+        # then filter to retain intervals with begin/end coordinates close to query
+        return [interval for interval in self.get_overlaps(begin, end)
+                if jaccard_coefficient(interval, SimpleInterval.of(begin, end)) >= min_jaccard]
 
     def __len__(self):
         self.build()  # make sure the tree is up-to-date

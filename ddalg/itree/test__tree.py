@@ -90,6 +90,15 @@ class TestIntervalTree(unittest.TestCase):
         results = tree.fuzzy_query(40, 60, coverage=.80)
         self.assertListEqual([SimpleInterval(38, 62)], results)
 
+    def test_jaccard_query(self):
+        tree = IntervalTree(make_intervals(-20, 80, 11, step=5))
+        self.assertListEqual([SimpleInterval(-5, 95), SimpleInterval(0, 100)], tree.jaccard_query(-5, 100, .9))
+
+        # query = SimpleInterval(-5, 100)
+        # print("QUERY: {}".format(query))
+        # for i in tree:
+        #     print("{:>25} - {:.2f}".format(str(i), jaccard_coefficient(i, query)))
+
     def test_bool(self):
         self.assertTrue(self.tree)  # tree with at least one element is true
         self.assertFalse(IntervalTree([]))  # empty tree is False
