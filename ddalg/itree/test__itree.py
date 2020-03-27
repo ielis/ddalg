@@ -44,22 +44,22 @@ class TestIntervalTree(unittest.TestCase):
 
         self.tree = IntervalTree(intervals)
 
-    def test_stab(self):
-        self.assertEqual(0, len(self.tree.stab(0)))
+    def test_search(self):
+        self.assertEqual(0, len(self.tree.search(0)))
 
-        result = self.tree.stab(1)
+        result = self.tree.search(1)
         self.assertEqual(1, len(result))
         self.assertListEqual([SimpleInterval(0, 3)], result)
 
-        result = self.tree.stab(6)
+        result = self.tree.search(6)
         self.assertEqual(3, len(result))
         self.assertListEqual([SimpleInterval(3, 6), SimpleInterval(4, 7), SimpleInterval(5, 8)], result)
 
-        result = self.tree.stab(11)
+        result = self.tree.search(11)
         self.assertEqual(1, len(result))
         self.assertEqual([SimpleInterval(8, 11)], result)
 
-        self.assertEqual(0, len(self.tree.stab(12)))
+        self.assertEqual(0, len(self.tree.search(12)))
 
     def test_query(self):
         self.assertEqual(0, len(self.tree.query(-1, 0)))
@@ -83,12 +83,12 @@ class TestIntervalTree(unittest.TestCase):
     def test_len(self):
         self.assertEqual(9, len(self.tree))
 
-    def test_add(self):
-        self.assertEqual(0, len(self.tree.stab(12)))
+    def test_insert(self):
+        self.assertEqual(0, len(self.tree.search(12)))
 
-        self.tree.add(SimpleInterval(9, 12))
+        self.tree.insert(SimpleInterval(9, 12))
 
-        results = self.tree.stab(12)
+        results = self.tree.search(12)
         self.assertEqual(1, len(results))
         self.assertListEqual([SimpleInterval(9, 12)], results)
 

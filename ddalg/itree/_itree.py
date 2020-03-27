@@ -81,7 +81,7 @@ class IntervalNode:
         if right:
             self.right = IntervalNode(right)
 
-    def stab(self, position: numbers.Number) -> typing.List[Interval]:
+    def search(self, position: numbers.Number) -> typing.List[Interval]:
         """
         Return intervals that overlap with given `position`.
         :param position: 1-based numeric position
@@ -98,10 +98,10 @@ class IntervalNode:
                 break
 
         if position < self._center and self.left:
-            for item in self.left.stab(position):
+            for item in self.left.search(position):
                 results.append(item)
         elif position >= self._center and self.right:
-            for item in self.right.stab(position):
+            for item in self.right.search(position):
                 results.append(item)
         return results
 
@@ -152,13 +152,13 @@ class IntervalTree:
             self._in_sync = True
             self._size = len(self._intervals)
 
-    def add(self, interval):
+    def insert(self, interval):
         self._intervals.append(interval)
         self._in_sync = False
 
-    def stab(self, position):
+    def search(self, position):
         self.build()
-        return self._head.stab(position)
+        return self._head.search(position)
 
     def query(self, begin, end):
         self.build()
