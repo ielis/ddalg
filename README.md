@@ -32,7 +32,7 @@ The current implementation needs to rebuild the tree after each `insert`, hence 
       @property
       def end(self):
         return self._end
-   ``` 
+    ``` 
 - create a collection of your intervals and store them in the interval tree:
   ```python
   from ddalg.itree import IntervalTree
