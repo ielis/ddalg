@@ -36,6 +36,9 @@ class Interval(metaclass=abc.ABCMeta):
         else:
             return self.end < other.end
 
+    def __len__(self):
+        return self.end - self.begin
+
     def __eq__(self, other):
         return self.begin == other.begin and self.end == other.end
 

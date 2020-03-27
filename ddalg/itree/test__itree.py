@@ -22,6 +22,10 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(hash(SimpleInterval(1, 3)), hash(self.one))
         self.assertNotEqual(hash(SimpleInterval(2, 3)), hash(self.one))
 
+    def test_len(self):
+        self.assertEqual(2, len(self.one))
+        self.assertEqual(5, len(SimpleInterval(10, 15)))
+
     def test_get_center(self):
         self.assertEqual(2, get_center([SimpleInterval(1, 2), SimpleInterval(3, 4)]))
         self.assertEqual(3, get_center([SimpleInterval(1, 2),
