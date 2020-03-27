@@ -59,14 +59,19 @@ def get_center(items: typing.Iterable[Interval]):
 
 class IntervalNode:
 
-    def __init__(self, intervals: typing.Iterable[Interval]):
+    def __init__(self, intervals: typing.List[Interval], parent=None):
         """
         Create a node from given intervals.
-        :param intervals: iterable with intervals
+        :param intervals: list with intervals
         """
-        self._center = get_center(intervals)
+        self.intervals = OrderedDict()
+        self.parent = parent
         self.left = None
         self.right = None
+
+        if len(intervals) == 0:
+            return
+        self._center = get_center(intervals)
 
         inner = defaultdict(list)
         left, right = [], []
@@ -80,16 +85,15 @@ class IntervalNode:
                 inner[interval].append(interval)
 
         # make sure that the intervals are position sorted
-        self._intervals = OrderedDict()
         for interval in sorted(inner.keys()):
-            self._intervals[interval] = []
+            self.intervals[interval] = []
             for item in inner[interval]:
-                self._intervals[interval].append(item)
+                self.intervals[interval].append(item)
 
         if left:
-            self.left = IntervalNode(left)
+            self.left = IntervalNode(left, parent=self)
         if right:
-            self.right = IntervalNode(right)
+            self.right = IntervalNode(right, parent=self)
 
     def search(self, position: numbers.Number) -> typing.List[Interval]:
         """
@@ -100,9 +104,9 @@ class IntervalNode:
         if not isinstance(position, numbers.Number):
             raise ValueError("Expected a number but `{}` is `{}`".format(position, type(position)))
         results = []
-        for entry in self._intervals:
+        for entry in self.intervals:
             if entry.contains(position):
-                for item in self._intervals[entry]:
+                for item in self.intervals[entry]:
                     results.append(item)
             elif entry.begin > position:
                 break
@@ -124,9 +128,9 @@ class IntervalNode:
         """
         results = []
 
-        for entry in self._intervals:
+        for entry in self.intervals:
             if entry.intersects(begin, end):
-                for item in self._intervals[entry]:
+                for item in self.intervals[entry]:
                     results.append(item)
             elif entry.begin >= end:
                 break
@@ -140,12 +144,38 @@ class IntervalNode:
 
         return results
 
+    def min_value(self):
+        return next(iter(self.intervals))
+
+    def max_value(self):
+        return next(reversed(self.intervals))
+
+    def minimum(self):
+        node = self
+        while node.left:
+            node = node.left
+        return node
+
+    def maximum(self):
+        node = self
+        while node.right:
+            node = node.right
+        return node
+
+    def __iter__(self):
+        return IntervalNodeFwdIterator(self)
+
+    def __eq__(self, other):
+        return self.intervals == other.intervals \
+               and self.left == other.left \
+               and self.right == other.right
+
     def __len__(self):
-        return len(self._intervals)
+        return len(self.intervals) if self.intervals else 0
 
     def __repr__(self):
-        return "ITNode(center={},n={},n_left={},n_right={})".format(self._center, len(self), len(self.left),
-                                                                    len(self.right))
+        intstr = ','.join([str(key) for key in self.intervals.keys()])
+        return "ITNode(intervals=[{}])".format(intstr)
 
 
 class IntervalTree:
@@ -222,3 +252,84 @@ class IntervalTree:
 
     def __repr__(self):
         return "IntervalTree(size={})".format(len(self))
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        pass
+
+    def __bool__(self):
+        return len(self) != 0
+
+
+class IntervalNodeFwdIterator:
+
+    def __init__(self, root: IntervalNode):
+        self.initialized = False
+        self.root = root
+        self.next = None
+
+    def _has_next(self):
+        if not self.initialized:
+            if not self.root:
+                return False
+            else:
+                self.next = self.root.minimum()
+                self.initialized = True
+
+        return self.next is not None
+
+    def __next__(self):
+        if self._has_next():
+            cur = self.next
+            self.next = self.successor(cur)
+            return cur
+        else:
+            raise StopIteration()
+
+    @staticmethod
+    def successor(node: IntervalNode):
+        if node.right:
+            return node.right.minimum()
+        y = node.parent
+        while y and node == y.right:
+            node = y
+            y = y.parent
+        return y
+
+
+class IntervalNodeRevIterator:
+    # Currently not used, perhaps in future
+    def __init__(self, root: IntervalNode):
+        self.initialized = False
+        self.root = root
+        self.next = None
+
+    def has_next(self):
+        if not self.initialized:
+            if not self.root:
+                return False
+            else:
+                self.next = self.root.maximum()
+                self.initialized = True
+
+        return self.next is not None
+
+    def __next__(self):
+        if self.has_next():
+            cur = self.next
+            self.next = self.predecessor(cur)
+            return cur
+        else:
+            raise StopIteration()
+
+    @staticmethod
+    def predecessor(node: IntervalNode):
+        if node.left:
+            return node.left.maximum()
+        y = node.parent
+        while y and node == y.left:
+            node = y
+            y = y.parent
+        return y

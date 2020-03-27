@@ -1,7 +1,7 @@
 import unittest
 
 from ddalg.itree import Interval, IntervalTree
-from ._itree import get_center
+from ._itree import get_center, IntervalNode
 
 
 class TestInterval(unittest.TestCase):
@@ -26,12 +26,6 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(2, len(self.one))
         self.assertEqual(5, len(SimpleInterval(10, 15)))
 
-    def test_get_center(self):
-        self.assertEqual(2, get_center([SimpleInterval(1, 2), SimpleInterval(3, 4)]))
-        self.assertEqual(3, get_center([SimpleInterval(1, 2),
-                                        SimpleInterval(3, 4),
-                                        SimpleInterval(4, 5)]))
-
     def test_intersection(self):
         intersection = self.one.intersection(SimpleInterval(0, 1))
         self.assertEqual(0, intersection)
@@ -47,6 +41,44 @@ class TestInterval(unittest.TestCase):
 
         intersection = self.one.intersection(SimpleInterval(3, 4))
         self.assertEqual(0, intersection)
+
+
+class TestIntervalNode(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.node = IntervalNode(make_intervals(0, 3, 9))
+
+    def test_equality(self):
+        self.assertEqual(IntervalNode(make_intervals(0, 3, 9)), self.node)
+
+    def test_minimum(self):
+        self.assertEqual(IntervalNode([SimpleInterval(0, 3), SimpleInterval(1, 4)]),
+                         self.node.minimum())
+        empty = IntervalNode([])
+        self.assertEqual(empty.minimum(), empty)
+
+    def test_maximum(self):
+        self.assertEqual(IntervalNode([SimpleInterval(8, 11)]),
+                         self.node.maximum())
+        empty = IntervalNode([])
+        self.assertEqual(empty.maximum(), empty)
+
+    def test_min_value(self):
+        self.assertEqual(SimpleInterval(2, 5), self.node.min_value())
+        self.assertEqual(SimpleInterval(0, 3), self.node.left.min_value())
+
+    def test_max_value(self):
+        self.assertEqual(SimpleInterval(4, 7), self.node.max_value())
+        self.assertEqual(SimpleInterval(7, 10), self.node.right.max_value())
+
+    def test_iterate(self):
+        nodes = list(self.node)
+        self.assertEqual(IntervalNode([SimpleInterval(0, 3), SimpleInterval(1, 4)]), nodes[0])
+        self.assertEqual(IntervalNode([SimpleInterval(8, 11)]), nodes[-1])
+
+        # iterate through an empty node
+        nodes = list(IntervalNode([]))
+        self.assertListEqual([], nodes)
 
 
 class TestIntervalTree(unittest.TestCase):
@@ -95,6 +127,7 @@ class TestIntervalTree(unittest.TestCase):
         self.assertEqual(0, len(self.tree.get_overlaps(11, 12)))
 
     def test_len(self):
+        self.assertEqual(0, len(IntervalTree([])))
         self.assertEqual(9, len(self.tree))
 
     def test_insert(self):
@@ -129,6 +162,19 @@ class TestIntervalTree(unittest.TestCase):
         # test error input
         self.assertRaises(ValueError, tree.fuzzy_query, 0, 100, 1.5)
 
+    def test_bool(self):
+        self.assertTrue(self.tree)  # tree with at least one element is true
+        self.assertFalse(IntervalTree([]))  # empty tree is False
+
+
+class TestUtils(unittest.TestCase):
+
+    def test_get_center(self):
+        self.assertEqual(2, get_center([SimpleInterval(1, 2), SimpleInterval(3, 4)]))
+        self.assertEqual(3, get_center([SimpleInterval(1, 2),
+                                        SimpleInterval(3, 4),
+                                        SimpleInterval(4, 5)]))
+
 
 class SimpleInterval(Interval):
 
@@ -146,6 +192,7 @@ class SimpleInterval(Interval):
 
 
 def make_intervals(begin, end, n):
+    # intervals=[(0,3), (1,4), ..., (8, 11)]
     intervals = []
     i = 0
     a, b = begin, end
@@ -154,5 +201,4 @@ def make_intervals(begin, end, n):
         a += 1
         b += 1
         i += 1
-    # intervals=[(0,3), (1,4), ..., (8, 11)]
     return intervals
