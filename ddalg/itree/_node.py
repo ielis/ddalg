@@ -112,8 +112,8 @@ class IntervalNode:
             node = node.right
         return node
 
-    def __iter__(self):
-        return IntervalNodeFwdIterator(self)
+    # def __iter__(self):
+    #     return IntervalNodeFwdIterator(self)
 
     def __eq__(self, other):
         return self.intervals == other.intervals \
@@ -128,76 +128,76 @@ class IntervalNode:
         return "ITNode(intervals=[{}])".format(intstr)
 
 
-class IntervalNodeFwdIterator:
-
-    def __init__(self, root: IntervalNode):
-        self.initialized = False
-        self.root = root
-        self.next = None
-
-    def _has_next(self):
-        if not self.initialized:
-            if not self.root:
-                return False
-            else:
-                self.next = self.root.minimum()
-                self.initialized = True
-
-        return self.next is not None
-
-    def __next__(self):
-        if self._has_next():
-            cur = self.next
-            self.next = self.successor(cur)
-            return cur
-        else:
-            raise StopIteration()
-
-    @staticmethod
-    def successor(node: IntervalNode):
-        if node.right:
-            return node.right.minimum()
-        y = node.parent
-        while y and node == y.right:
-            node = y
-            y = y.parent
-        return y
-
-
-class IntervalNodeRevIterator:
-    # Currently not used, perhaps in future
-    def __init__(self, root: IntervalNode):
-        self.initialized = False
-        self.root = root
-        self.next = None
-
-    def has_next(self):
-        if not self.initialized:
-            if not self.root:
-                return False
-            else:
-                self.next = self.root.maximum()
-                self.initialized = True
-
-        return self.next is not None
-
-    def __next__(self):
-        if self.has_next():
-            cur = self.next
-            self.next = self.predecessor(cur)
-            return cur
-        else:
-            raise StopIteration()
-
-    @staticmethod
-    def predecessor(node: IntervalNode):
-        if node.left:
-            return node.left.maximum()
-        y = node.parent
-        while y and node == y.left:
-            node = y
-            y = y.parent
-        return y
+# class IntervalNodeFwdIterator:
+#
+#     def __init__(self, root: IntervalNode):
+#         self.initialized = False
+#         self.root = root
+#         self.next = None
+#
+#     def _has_next(self):
+#         if not self.initialized:
+#             if not self.root:
+#                 return False
+#             else:
+#                 self.next = self.root.minimum()
+#                 self.initialized = True
+#
+#         return self.next is not None
+#
+#     def __next__(self):
+#         if self._has_next():
+#             cur = self.next
+#             self.next = self.successor(cur)
+#             return cur
+#         else:
+#             raise StopIteration()
+#
+#     @staticmethod
+#     def successor(node: IntervalNode):
+#         if node.right:
+#             return node.right.minimum()
+#         y = node.parent
+#         while y and node == y.right:
+#             node = y
+#             y = y.parent
+#         return y
+#
+#
+# class IntervalNodeRevIterator:
+#     # Currently not used, perhaps in future
+#     def __init__(self, root: IntervalNode):
+#         self.initialized = False
+#         self.root = root
+#         self.next = None
+#
+#     def has_next(self):
+#         if not self.initialized:
+#             if not self.root:
+#                 return False
+#             else:
+#                 self.next = self.root.maximum()
+#                 self.initialized = True
+#
+#         return self.next is not None
+#
+#     def __next__(self):
+#         if self.has_next():
+#             cur = self.next
+#             self.next = self.predecessor(cur)
+#             return cur
+#         else:
+#             raise StopIteration()
+#
+#     @staticmethod
+#     def predecessor(node: IntervalNode):
+#         if node.left:
+#             return node.left.maximum()
+#         y = node.parent
+#         while y and node == y.left:
+#             node = y
+#             y = y.parent
+#         return y
 
 
 def get_center(items: typing.Iterable[Interval]):

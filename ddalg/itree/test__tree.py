@@ -1,6 +1,5 @@
 import unittest
 
-from ._node import IntervalNode
 from ._tree import IntervalTree
 from .test__interval import SimpleInterval, make_intervals
 
@@ -91,6 +90,22 @@ class TestIntervalTree(unittest.TestCase):
         self.assertFalse(IntervalTree([]))  # empty tree is False
 
     def test_iteration(self):
-        nodes = list(self.tree)
-        self.assertEqual(IntervalNode([SimpleInterval(0, 3), SimpleInterval(1, 4)]), nodes[0])
-        self.assertEqual(IntervalNode([SimpleInterval(8, 11)]), nodes[-1])
+        self.tree.insert(SimpleInterval(4, 7))
+        items = list(self.tree)
+
+        self.assertListEqual([SimpleInterval(0, 3),
+                              SimpleInterval(1, 4),
+                              SimpleInterval(2, 5),
+                              SimpleInterval(3, 6),
+                              SimpleInterval(4, 7),
+                              SimpleInterval(4, 7),
+                              SimpleInterval(5, 8),
+                              SimpleInterval(6, 9),
+                              SimpleInterval(7, 10),
+                              SimpleInterval(8, 11)],
+                             items)
+
+    def test_iteration_through_empty_tree(self):
+        tree = IntervalTree([])
+        items = list(tree)
+        self.assertListEqual([], items)

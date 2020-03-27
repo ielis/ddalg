@@ -1,5 +1,6 @@
 import numbers
 import typing
+from collections import deque
 
 from ddalg.utils import get_boundary_margin
 from ._node import IntervalNode, Interval
@@ -35,7 +36,7 @@ class IntervalTree:
         :param position: 1-based numeric position
         :return: list of overlapping intervals
         """
-        self.build()
+        self.build()  # make sure the tree is up-to-date
         return self._head.search(position)
 
     def get_overlaps(self, begin, end) -> typing.List[Interval]:
@@ -45,7 +46,7 @@ class IntervalTree:
         :param end: 0-based (included) end position of query
         :return: list with overlapping coordinates
         """
-        self.build()
+        self.build()  # make sure the tree is up-to-date
         return self._head.get_overlaps(begin, end)
 
     def fuzzy_query(self, begin, end, coverage=1.) -> typing.List[Interval]:
@@ -60,8 +61,7 @@ class IntervalTree:
         if 0 < coverage > 1:
             raise ValueError("coverage must be within [0,1]")
 
-        # make sure the tree is up-to-date
-        self.build()
+        self.build()  # make sure the tree is up-to-date
         margin = get_boundary_margin(begin, end, coverage)
 
         # distal begin/end coordinates are defined as are query+-margin
@@ -74,14 +74,69 @@ class IntervalTree:
                 if interval.begin <= prox_begin and interval.end >= prox_end]
 
     def __len__(self):
-        self.build()
+        self.build()  # make sure the tree is up-to-date
         return self._size
 
     def __repr__(self):
         return "IntervalTree(size={})".format(len(self))
 
     def __iter__(self):
-        return iter(self._head)
+        self.build()  # make sure the tree is up-to-date
+        return IntervalTreeIterator(self._head)
 
     def __bool__(self):
         return len(self) != 0
+
+
+class IntervalTreeIterator:
+
+    def __init__(self, root):
+        self.initialized = False
+        self.root = root
+        self.node = None
+        self.queue = None
+
+    def has_next(self):
+        if not self.initialized:
+            if self.root:
+                # find node with the smallest values and dump elements into a queue
+                self.node = self.root.minimum()
+                self.queue = self.node_to_queue(self.node)
+                self.initialized = True
+            else:
+                # the tree is empty, no node
+                return False
+
+        if self.queue:
+            return True
+        else:
+            # done iterating elements from the current node, try the next node
+            self.node = self.successor(self.node)
+            self.queue = self.node_to_queue(self.node)
+
+        return len(self.queue) != 0
+
+    def __next__(self):
+        if self.has_next():
+            return self.queue.popleft()
+        else:
+            raise StopIteration()
+
+    @staticmethod
+    def node_to_queue(node: IntervalNode) -> deque:
+        queue = deque()
+        if node:
+            for interval in node.intervals:
+                for item in node.intervals[interval]:
+                    queue.append(item)
+        return queue
+
+    @staticmethod
+    def successor(node: IntervalNode):
+        if node.right:
+            return node.right.minimum()
+        y = node.parent
+        while y and node == y.right:
+            node = y
+            y = y.parent
+        return y
