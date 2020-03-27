@@ -1,4 +1,4 @@
-__version__ = '0.0.2rc3'
+__version__ = '0.0.2'
 
 from . import itree
 from . import utils
