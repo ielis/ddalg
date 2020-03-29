@@ -2,8 +2,13 @@ from setuptools import setup, find_packages
 
 import ddalg
 
+# read requirements
+with open('requirements.txt') as f:
+      requirements = f.read().splitlines()
+
+# read description
 with open("README.md", 'r') as fh:
-    long_description = fh.read()
+      long_description = fh.read()
 
 setup(name='ddalg',
       version=ddalg.__version__,
@@ -16,7 +21,7 @@ setup(name='ddalg',
       packages=find_packages(),
       python_requires='>=3.6',
       setup_requires=['coverage>=5.0.4'],
-      install_requires=['numpy>=1.18.2', 'deprecation>=2.0.7'],
+      install_requires=requirements,
 
       license='GPLv3',
       keywords='algorithms python')

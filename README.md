@@ -1,6 +1,8 @@
 # ddalg
 Algorithms and data structures for my Python projects.
 
+[![Build Status](https://travis-ci.org/ielis/ddalg.svg?branch=master)](https://travis-ci.org/ielis/ddalg)
+
 ## Interval tree
 
 Interval tree is a data structure for holding intervals and to allow efficiently find intervals that overlap with given interval or point. Read more on [Wikipedia](https://en.wikipedia.org/wiki/Interval_tree).
