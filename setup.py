@@ -4,7 +4,7 @@ import ddalg
 
 # read requirements
 with open('requirements.txt') as f:
-      requirements = f.read().splitlines()
+    requirements = f.read().splitlines()
 
 # read description
 with open("README.md", 'r') as fh:
