@@ -53,6 +53,11 @@ class IntervalNode:
         if not isinstance(position, numbers.Number):
             raise ValueError("Expected a number but `{}` is `{}`".format(position, type(position)))
         results = []
+
+        if not self.intervals:
+            # empty tree
+            return results
+
         for entry in self.intervals:
             if entry.contains(position):
                 for item in self.intervals[entry]:
@@ -76,6 +81,10 @@ class IntervalNode:
         :return: list of overlapping intervals
         """
         results = []
+
+        if not self.intervals:
+            # empty tree
+            return results
 
         for entry in self.intervals:
             if entry.intersects(begin, end):

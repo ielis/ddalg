@@ -23,10 +23,16 @@ class TestItree(unittest.TestCase):
         self.assertEqual(3, len(overlaps))
         self.assertListEqual([IntervalImpl.of(0, 40), IntervalImpl.of(10, 20), IntervalImpl.of(15, 25)], overlaps)
 
+    def test_get_overlaps_empty_tree(self):
+        self.assertListEqual([], IntervalTree([]).get_overlaps(0, 1))
+
     def test_search(self):
         overlaps = self.tree.search(35)
         self.assertEqual(2, len(overlaps))
         self.assertListEqual([IntervalImpl.of(0, 40), IntervalImpl.of(25, 35)], overlaps)
+
+    def test_search_empty_tree(self):
+        self.assertListEqual([], IntervalTree([]).search(1))
 
     def test_insert(self):
         overlaps = self.tree.search(40)
