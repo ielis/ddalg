@@ -3,8 +3,8 @@ import numbers
 import typing
 from collections import deque
 
+from ddalg.metrics.interval import get_boundary_margin, jaccard_coefficient
 from ddalg.model import Interval
-from ddalg.utils import get_boundary_margin, jaccard_coefficient
 from ._node import IntervalNode
 
 

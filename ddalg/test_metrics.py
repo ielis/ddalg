@@ -1,12 +1,12 @@
 import unittest
 
-from ddalg.utils import jaccard_coefficient, get_boundary_margin
-from .itree.test__tree import SimpleInterval
+from ddalg.itree.test__tree import SimpleInterval
+from ddalg.metrics.interval import jaccard_coefficient, get_boundary_margin
 
 
-class TestUtil(unittest.TestCase):
+class TestInterval(unittest.TestCase):
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.one = SimpleInterval(0, 3)
         self.two = SimpleInterval(1, 4)
         self.three = SimpleInterval(3, 5)

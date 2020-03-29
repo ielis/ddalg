@@ -1,3 +1,6 @@
+from ddalg.model import Interval
+
+
 def get_boundary_margin(begin, end, coverage=1.):
     """
     Returns a value to be added/subtracted to the interval begin and end positions such that another interval
@@ -16,7 +19,7 @@ def get_boundary_margin(begin, end, coverage=1.):
     return (end - begin) * (1 - coverage) / 2
 
 
-def jaccard_coefficient(first, second):
+def jaccard_coefficient(first: Interval, second: Interval):
     # jaccard is the intersection over the union
     intersection = first.intersection(second)
     return intersection / (len(first) + len(second) - intersection)

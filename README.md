@@ -16,7 +16,7 @@ The current implementation needs to rebuild the tree after each `insert`, hence 
   - `begin` - 0-based (excluded) begin coordinate of the interval
   - `end` - 0-based (included) end coordinate of the interval
     ```python
-    from ddalg.itree import Interval
+    from ddalg.model import Interval
     
     class YourInterval(Interval):
     
@@ -51,8 +51,13 @@ The current implementation needs to rebuild the tree after each `insert`, hence 
     itree.get_overlaps(0, 1) 
     ``` 
     > returns `(0,3)`, effectively the same query as above
-  - using fuzzy search with required coverage
+  - for intervals with minimal required coverage
     ```python
     itree.fuzzy_query(0, 1, coverage=.90)
     ```
-    > require interval stored in a tree to have at least 90% overlap with query interval 
+    > return intervals with >=.9 overlap with respect to query coordinates 
+  - for intervals with minimal jaccard index
+    ```python
+    itree.jaccard_query(0, 1, min_jaccard=.90)
+    ```
+    > return intervals having jaccard_index>=.9 with respect to query coordinates 
