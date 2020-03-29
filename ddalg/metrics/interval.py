@@ -19,7 +19,12 @@ def get_boundary_margin(begin, end, coverage=1.):
     return (end - begin) * (1 - coverage) / 2
 
 
-def jaccard_coefficient(first: Interval, second: Interval):
-    # jaccard is the intersection over the union
+def jaccard_coefficient(first: Interval, second: Interval) -> float:
+    # jaccard is the ratio of the intersection over the union
     intersection = first.intersection(second)
     return intersection / (len(first) + len(second) - intersection)
+
+
+def reciprocal_overlap(first: Interval, second: Interval) -> float:
+    intersection = first.intersection(second)
+    return min(intersection / len(first), intersection / len(second))
