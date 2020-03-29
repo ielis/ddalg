@@ -16,7 +16,7 @@ setup(name='ddalg',
       packages=find_packages(),
       python_requires='>=3.6',
       setup_requires=['coverage>=5.0.4'],
-      install_requires=['numpy>=1.18.2'],
+      install_requires=['numpy>=1.18.2', 'deprecation>=2.0.7'],
 
       license='GPLv3',
       keywords='algorithms python')

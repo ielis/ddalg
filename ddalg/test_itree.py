@@ -1,5 +1,7 @@
 import unittest
 
+from deprecation import fail_if_not_removed
+
 from ddalg.itree import IntervalTree
 from ddalg.model import Interval
 
@@ -36,6 +38,18 @@ class TestItree(unittest.TestCase):
         overlaps = self.tree.search(40)
         self.assertEqual(2, len(overlaps))
         self.assertListEqual([IntervalImpl.of(0, 40), IntervalImpl.of(35, 45)], overlaps)
+
+    @fail_if_not_removed
+    def test_jaccard_query(self):
+        overlaps = self.tree.jaccard_query(5, 40, min_jaccard=.8)
+        self.assertEqual(1, len(overlaps))
+        self.assertListEqual([IntervalImpl.of(0, 40)], overlaps)
+
+    @fail_if_not_removed
+    def test_fuzzy_query(self):
+        overlaps = self.tree.fuzzy_query(2, 38, coverage=.85)
+        self.assertEqual(1, len(overlaps))
+        self.assertListEqual([IntervalImpl.of(0, 40)], overlaps)
 
 
 class IntervalImpl(Interval):

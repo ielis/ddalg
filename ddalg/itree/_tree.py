@@ -3,6 +3,9 @@ import numbers
 import typing
 from collections import deque
 
+from deprecation import deprecated
+
+from ddalg import __version__
 from ddalg.metrics.interval import get_boundary_margin, jaccard_coefficient
 from ddalg.model import Interval
 from ._node import IntervalNode
@@ -52,6 +55,9 @@ class IntervalTree:
         self.build()  # make sure the tree is up-to-date
         return self._head.get_overlaps(begin, end)
 
+    @deprecated(deprecated_in='0.0.3', removed_in='0.0.5', current_version=__version__,
+                details='Get all overlapping intervals using `get_overlaps` and then remove using methods from '
+                        '`ddalg.metrics.interval` module.')
     def fuzzy_query(self, begin, end, coverage=1.) -> typing.List[Interval]:
         """
         Get intervals that imperfectly overlap with given query coordinates, while covering at least `coverage` of
@@ -78,6 +84,9 @@ class IntervalTree:
                 if dist_begin <= interval.begin <= prox_begin
                 and dist_end >= interval.end >= prox_end]
 
+    @deprecated(deprecated_in='0.0.3', removed_in='0.0.5', current_version=__version__,
+                details='Get all overlapping intervals using `get_overlaps` and then remove using methods from '
+                        '`ddalg.metrics.interval` module.')
     def jaccard_query(self, begin, end, min_jaccard=1.):
         """
         Get intervals that imperfectly overlap with given query coordinates, while covering at least `coverage` of
