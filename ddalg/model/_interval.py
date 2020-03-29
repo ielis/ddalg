@@ -42,23 +42,3 @@ class Interval(metaclass=abc.ABCMeta):
 
     def __hash__(self):
         return hash((self.begin, self.end))
-
-
-class SimpleInterval(Interval):
-    """Simple interval implementation for internal usage within the module."""
-
-    def __init__(self, begin: int, end: int):
-        self._begin = begin
-        self._end = end
-
-    @classmethod
-    def of(cls, begin, end):
-        return cls(begin, end)
-
-    @property
-    def begin(self):
-        return self._begin
-
-    @property
-    def end(self):
-        return self._end

@@ -3,9 +3,9 @@ import numbers
 import typing
 from collections import deque
 
+from ddalg.model import Interval
 from ddalg.utils import get_boundary_margin, jaccard_coefficient
-from ._interval import SimpleInterval
-from ._node import IntervalNode, Interval
+from ._node import IntervalNode
 
 
 class IntervalTree:
@@ -164,3 +164,23 @@ class IntervalTreeIterator:
             node = y
             y = y.parent
         return y
+
+
+class SimpleInterval(Interval):
+    """Simple interval implementation for internal usage within the module."""
+
+    def __init__(self, begin: int, end: int):
+        self._begin = begin
+        self._end = end
+
+    @classmethod
+    def of(cls, begin, end):
+        return cls(begin, end)
+
+    @property
+    def begin(self):
+        return self._begin
+
+    @property
+    def end(self):
+        return self._end

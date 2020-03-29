@@ -1,6 +1,6 @@
 import unittest
 
-from ._interval import SimpleInterval
+from ddalg.model import Interval
 
 
 class TestInterval(unittest.TestCase):
@@ -53,3 +53,23 @@ def make_intervals(begin, end, n, step=1):
         b += step
         i += 1
     return intervals
+
+
+class SimpleInterval(Interval):
+    """Simple interval implementation for internal usage within the module."""
+
+    def __init__(self, begin: int, end: int):
+        self._begin = begin
+        self._end = end
+
+    @classmethod
+    def of(cls, begin, end):
+        return cls(begin, end)
+
+    @property
+    def begin(self):
+        return self._begin
+
+    @property
+    def end(self):
+        return self._end

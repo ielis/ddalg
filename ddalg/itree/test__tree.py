@@ -1,7 +1,7 @@
 import unittest
 
-from ._tree import IntervalTree
-from .test__interval import SimpleInterval, make_intervals
+from ddalg.model.test__interval import make_intervals
+from ._tree import IntervalTree, SimpleInterval
 
 
 class TestIntervalTree(unittest.TestCase):

@@ -4,7 +4,7 @@ from collections import OrderedDict, defaultdict
 
 import numpy as np
 
-from ._interval import Interval
+from ddalg.model import Interval
 
 
 class IntervalNode:

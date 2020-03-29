@@ -1,7 +1,8 @@
 import unittest
 
+from ddalg.model.test__interval import make_intervals
 from ._node import IntervalNode, get_center
-from .test__interval import SimpleInterval, make_intervals
+from ._tree import SimpleInterval
 
 
 class TestIntervalNode(unittest.TestCase):
