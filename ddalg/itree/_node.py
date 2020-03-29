@@ -1,8 +1,7 @@
 import numbers
+import statistics
 import typing
 from collections import OrderedDict, defaultdict
-
-import numpy as np
 
 from ddalg.model import Interval
 
@@ -21,7 +20,7 @@ class IntervalNode:
 
         if len(intervals) == 0:
             return
-        self._center = get_center(intervals)
+        self._center = statistics.median(get_coordinates(intervals))
 
         inner = defaultdict(list)
         left, right = [], []
@@ -128,6 +127,13 @@ class IntervalNode:
         return "ITNode(intervals=[{}])".format(intstr)
 
 
+def get_coordinates(items: typing.Iterable[Interval]):
+    results = set()
+    for item in items:
+        results.add(item.begin)
+        results.add(item.end)
+    return results
+
 # class IntervalNodeFwdIterator:
 #
 #     def __init__(self, root: IntervalNode):
@@ -198,9 +204,3 @@ class IntervalNode:
 #             node = y
 #             y = y.parent
 #         return y
-
-
-def get_center(items: typing.Iterable[Interval]):
-    positions = np.array(list(map(lambda x: (x.begin, x.end), items))).reshape(1, -1).flatten()
-    sorted_positions = np.sort(np.unique(positions))
-    return np.floor(np.median(sorted_positions))

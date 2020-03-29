@@ -40,7 +40,7 @@ class TestIntervalTree(unittest.TestCase):
         result = self.tree.get_overlaps(4, 6)
         self.assertEqual(4, len(result))
         self.assertListEqual(
-            [SimpleInterval(2, 5), SimpleInterval(3, 6), SimpleInterval(4, 7), SimpleInterval(5, 8)],
+            [SimpleInterval.of(3, 6), SimpleInterval.of(4, 7), SimpleInterval.of(5, 8), SimpleInterval.of(2, 5)],
             result)
 
         result = self.tree.get_overlaps(10, 11)

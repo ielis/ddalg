@@ -50,7 +50,7 @@ class IntervalTree:
         Get intervals that overlap with given query coordinates.
         :param begin: 0-based (excluded) begin position of query
         :param end: 0-based (included) end position of query
-        :return: list with overlapping coordinates
+        :return: list (not necessarily sorted) with intervals overlapping with query coordinates
         """
         self.build()  # make sure the tree is up-to-date
         return self._head.get_overlaps(begin, end)

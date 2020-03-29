@@ -51,6 +51,12 @@ class TestItree(unittest.TestCase):
         self.assertEqual(1, len(overlaps))
         self.assertListEqual([IntervalImpl.of(0, 40)], overlaps)
 
+    def test_create_with_single_interval_with_consecutive_coordinates(self):
+        # this was a bug caused by old method for finding median
+        tree = IntervalTree([IntervalImpl.of(0, 1)])
+        self.assertEqual(1, len(tree))
+        self.assertListEqual([IntervalImpl.of(0, 1)], tree.search(1))
+
 
 class IntervalImpl(Interval):
 
