@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 # read description
 with open("README.md", 'r') as fh:
-      long_description = fh.read()
+    long_description = fh.read()
 
 setup(name='ddalg',
       version=ddalg.__version__,
@@ -22,6 +22,7 @@ setup(name='ddalg',
       python_requires='>=3.6',
       setup_requires=['coverage>=5.0.4'],
       install_requires=requirements,
+      data_files=[('', ['requirements.txt'])],
 
       license='GPLv3',
       keywords='algorithms python')
