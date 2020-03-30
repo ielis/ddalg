@@ -1,4 +1,4 @@
-__version__ = '0.0.3.dev0'
+__version__ = '0.0.3'
 
 from . import itree
 from . import metrics
