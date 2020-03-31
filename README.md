@@ -1,7 +1,11 @@
 # ddalg
-Algorithms and data structures for my Python projects.
 
 [![Build Status](https://travis-ci.org/ielis/ddalg.svg?branch=master)](https://travis-ci.org/ielis/ddalg)
+[![PyPI version](https://badge.fury.io/py/ddalg.svg)](https://badge.fury.io/py/ddalg)
+
+Algorithms and data structures for my Python projects.
+
+
 
 ## Interval tree
 
