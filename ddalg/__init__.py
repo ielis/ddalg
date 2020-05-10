@@ -1,4 +1,6 @@
-__version__ = '0.0.4.dev0'
+import pkg_resources
+
+__version__ = pkg_resources.get_distribution('lcg').version
 
 from . import itree
 from . import metrics

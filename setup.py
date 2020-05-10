@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 
-import ddalg
-
 # read requirements
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
@@ -11,7 +9,7 @@ with open("README.md", 'r') as fh:
     long_description = fh.read()
 
 setup(name='ddalg',
-      version=ddalg.__version__,
+      version='0.0.4.dev0',
       author='Daniel Danis',
       author_email='daniel.gordon.danis@gmail.com',
       description='Algorithms and data structures for my Python projects',
