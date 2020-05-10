@@ -3,9 +3,10 @@
 1. do all the usual Git stuff
 2. build Python binaries, use the interpreter where all the required libraries are installed:
     ```bash
-    python setup.py test sdist bdist_wheel bdist_egg
+    python setup.py sdist bdist_wheel bdist_egg
     ```
-    > the command above will populate the `dist/` directory with package binaries
+    > - the command above will populate the `dist/` directory with package binaries
+    > - package `wheel` needs to be installed in order for `bdist_wheel` to work
 3. upload binaries to *PyPi*, use the interpreter where the package `twine` is installed
     ```bash
     python -m twine upload -s -i <key_id> dist/*
@@ -19,5 +20,5 @@
 2. run 
     ```bash
     cd ddalg
-    pip install -e ./
+    pip install .
     ```
